@@ -6,24 +6,35 @@
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""The Python implementation of the GRPC helloworld.Greeter server."""
+
+import re
+import sys
+import os
+from urllib.parse import unquote
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '/'))
+
 
 from concurrent import futures
 import logging
 
 import grpc
-import genqrcode_pb2
-import genqrcode_pb2_grpc
 
+from service.codeGeneration import genqrcode_pb2, genqrcode_pb2_grpc
+from service.codeGeneration.PixCodeGenerator import PixCodeGenerator
+import db.load
 
 class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
     def Generate(self, request, context):
-        return genqrcode_pb2.responseCode(res="Cob %s" % request.rq)
+        gen = PixCodeGenerator()
+        peer = context.peer()
+        ip = ''
+        match = re.match(r"ipv6:%5B([\w:.]+)%5D:\d+", peer)
+        if match:
+            ipv6_address = match.group(1)
+            ip = unquote(ipv6_address)
+        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", "0.01", ip)
+        return genqrcode_pb2.responseCode(res="%s" % code)
 
 
 def serve():
