@@ -1,3 +1,6 @@
+# encoding: utf-8
+
+# Insira aqui suas credenciais
 CREDENTIALS = {
     'client_id': '',
     'client_secret': '',
