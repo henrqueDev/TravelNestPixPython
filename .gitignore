@@ -1,3 +1,4 @@
 *__pycache__
 *.p12
 *.pem
+*credentials.py
