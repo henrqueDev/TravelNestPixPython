@@ -11,12 +11,12 @@ from db.load import engine
 class LogPixChargeRepository:
 
     def __init__(self):
-        self.__engine = engine
-        self.__Session = sessionmaker(bind=self.__engine)
+        self.engine = engine
+        self.session = sessionmaker(bind=self.engine)
 
     def save(self, address_requester):
         pix_log = LogPixCharge(address_requester)
-        session = self.__Session()
+        session = self.session()
         session.add(pix_log)
         session.commit()
         session.close()
