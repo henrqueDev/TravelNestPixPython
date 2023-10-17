@@ -6,39 +6,11 @@
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
-import psycopg2
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker, declarative_base
-
-
-db_user = 'postgres'
-db_password = '12345'
-db_host = 'localhost'
-db_port = '5432'
-db_name = 'travelnest_pix'
-
-conn_str = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-conn = psycopg2.connect(dbname='postgres', user=db_user, password=db_password, host=db_host, port=db_port)
-conn.autocommit = True
-
-cur = conn.cursor()
-cur.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{db_name}'")
-exists = cur.fetchone()
-
-if not exists:
-    cur.execute(f'CREATE DATABASE {db_name}')
-cur.close()
-conn.close()
-
-Base = declarative_base()
 
 import sys
 import os
 
-import psycopg2
-
-sys.path.append(os.path.join(os.path.dirname(__file__), 'service/qrCodeGeneration/'))
-
+sys.path.append(os.path.join(os.path.dirname(__file__), '/'))
 
 
 from concurrent import futures
@@ -47,12 +19,14 @@ import logging
 import grpc
 
 from service.qrCodeGeneration import genqrcode_pb2, genqrcode_pb2_grpc
+from service.qrCodeGeneration.PixCodeGenerator import PixCodeGenerator
+import db.load
 
 class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
     def Generate(self, request, context):
-        for item in request:
-            print(item)
-        return genqrcode_pb2.responseCode(res="Cob %s" % request.rq)
+        gen = PixCodeGenerator()
+        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", "0.01")
+        return genqrcode_pb2.responseCode(res="%s" % code)
 
 
 def serve():

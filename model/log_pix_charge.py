@@ -1,16 +1,21 @@
 import sys 
 import os
+import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '/'))
 
-from sql_alchemy import banco
+from sqlalchemy import create_engine, Column, Integer, DateTime
+from db.base import Base
+from db.load import engine
 
-class LogPixCharge:
+class LogPixCharge(Base):
     
     __tablename__ = 'pix_charge_logs'
 
-    pix_charge_log_id = banco.Column(banco.Integer, primary_key=True)
-    date = banco.Column(banco.DateTime)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    date = Column(DateTime)
 
-    def __init__(self, pix_charge_log_id , datetime):
-        self.pix_charge_log_id = pix_charge_log_id
-        self.date = datetime
+    def __init__(self):
+        self.date = datetime.datetime.now()
+
+
+Base.metadata.create_all(engine)
