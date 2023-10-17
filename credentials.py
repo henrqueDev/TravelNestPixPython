@@ -10,5 +10,3 @@ CREDENTIALS = {
     'sandbox':  False, # True: Ambiente de Homologação |  False: Ambiente de Produção
     'certificate': os.getenv('CERTIFICATE_PATH')
 }
-
-print(CREDENTIALS['certificate'])

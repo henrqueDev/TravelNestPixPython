@@ -7,8 +7,10 @@
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 
+import re
 import sys
 import os
+from urllib.parse import unquote
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '/'))
 
@@ -18,14 +20,20 @@ import logging
 
 import grpc
 
-from service.qrCodeGeneration import genqrcode_pb2, genqrcode_pb2_grpc
-from service.qrCodeGeneration.PixCodeGenerator import PixCodeGenerator
+from service.codeGeneration import genqrcode_pb2, genqrcode_pb2_grpc
+from service.codeGeneration.PixCodeGenerator import PixCodeGenerator
 import db.load
 
 class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
     def Generate(self, request, context):
         gen = PixCodeGenerator()
-        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", "0.01")
+        peer = context.peer()
+        ip = ''
+        match = re.match(r"ipv6:%5B([\w:.]+)%5D:\d+", peer)
+        if match:
+            ipv6_address = match.group(1)
+            ip = unquote(ipv6_address)
+        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", "0.01", ip)
         return genqrcode_pb2.responseCode(res="%s" % code)
 
 
