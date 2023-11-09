@@ -14,8 +14,8 @@ class LogPixChargeRepository:
         self.engine = engine
         self.session = sessionmaker(bind=self.engine)
 
-    def save(self, address_requester):
-        pix_log = LogPixCharge(address_requester)
+    def save(self, address_requester, id_user, qnt_cob, id_hotel ,id_cob):
+        pix_log = LogPixCharge(address_requester, id_user, qnt_cob, id_hotel ,id_cob)
         session = self.session()
         session.add(pix_log)
         session.commit()
