@@ -23,9 +23,11 @@ import grpc
 from service.codeGeneration import genqrcode_pb2, genqrcode_pb2_grpc
 from service.codeGeneration.PixCodeGenerator import PixCodeGenerator
 import db.load
-
+from efipay import EfiPay
+import credentials
 class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
     def Generate(self, request, context):
+        cmd = request.rq.split()
         gen = PixCodeGenerator()
         peer = context.peer()
         ip = ''
@@ -33,7 +35,8 @@ class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
         if match:
             ipv6_address = match.group(1)
             ip = unquote(ipv6_address)
-        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", "0.01", ip)
+        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", cmd[0], cmd[1], cmd[2], ip)
+        
         return genqrcode_pb2.responseCode(res="%s" % code)
 
 
