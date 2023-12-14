@@ -35,7 +35,8 @@ class Generator(genqrcode_pb2_grpc.GenQrCodeServiceServicer):
         if match:
             ipv6_address = match.group(1)
             ip = unquote(ipv6_address)
-        code = gen.generate_pix_code("1e84d92a-8997-41cc-9ca6-331cc602e857", cmd[0], cmd[1], cmd[2], ip)
+        print(cmd)
+        code = gen.generate_pix_code(cmd[0], cmd[1], cmd[2], cmd[3], ip, cmd[4], cmd[5], cmd[6])
         
         return genqrcode_pb2.responseCode(res="%s" % code)
 
