@@ -13,25 +13,25 @@ class LogPixCharge(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     date = Column(DateTime)
-    id_user = Column(Integer)
-    qnt_cob = Column(Float)
-    id_hotel = Column(Integer)
-    id_cob = Column(String)
+    user_id = Column(Integer)
+    total_price = Column(Float)
+    hotel_id = Column(Integer)
+    cob_id = Column(String)
     address_requester = Column(String)
     check_in = Column(Date)
     check_out = Column(Date)
-    id_room_option = Column(Integer)
+    room_option_id = Column(Integer)
     pix_key = Column(String)
 
-    def __init__(self, pix_key, address_requester, id_user, qnt_cob, id_hotel, id_cob, check_in, check_out, id_room_option):
+    def __init__(self, pix_key, address_requester, user_id, total_price, hotel_id, cob_id, check_in, check_out, room_option_id):
         self.date = datetime.datetime.now()
         self.address_requester = address_requester
-        self.id_user = id_user
-        self.qnt_cob = qnt_cob
-        self.id_hotel = id_hotel
-        self.id_cob = id_cob
+        self.user_id = user_id
+        self.total_price = total_price
+        self.hotel_id = hotel_id
+        self.cob_id = cob_id
         self.check_in = check_in
         self.check_out = check_out
-        self.id_room_option = id_room_option
+        self.room_option_id = room_option_id
         self.pix_key = pix_key
 Base.metadata.create_all(engine)
